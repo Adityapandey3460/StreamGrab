@@ -10,6 +10,8 @@ import json
 
 logger = logging.getLogger(__name__)
 
+BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
 class YouTubeDownloader:
     def __init__(self, download_folder="downloads"):
         self.download_folder = Path(download_folder)
@@ -39,7 +41,7 @@ class YouTubeDownloader:
     def get_video_info(self, video_url):
         """Get video information and available formats."""
         try:
-            with yt_dlp.YoutubeDL({'quiet': True, 'ignoreerrors': True}) as ydl:
+            with yt_dlp.YoutubeDL({'quiet': True, 'ignoreerrors': True,'user_agent': BROWSER_UA}) as ydl:
                 info = ydl.extract_info(video_url, download=False)
                 
                 if not info:
@@ -147,6 +149,7 @@ class YouTubeDownloader:
             'format': format_info['id'],
             'outtmpl': str(output_file),
             'quiet': True,
+            'user_agent': BROWSER_UA #add for act like browser
         }
         
         try:
@@ -185,7 +188,9 @@ class YouTubeDownloader:
             ydl_opts_video = {
                 'format': format_info['id'], 
                 'outtmpl': str(video_file),
-                'quiet': True
+                'quiet': True,
+                'user_agent': BROWSER_UA #add for act like browser
+
             }
             with yt_dlp.YoutubeDL(ydl_opts_video) as ydl:
                 ydl.download([video_url])
@@ -194,7 +199,8 @@ class YouTubeDownloader:
             ydl_opts_audio = {
                 'format': audio_id, 
                 'outtmpl': str(audio_file),
-                'quiet': True
+                'quiet': True,
+                'user_agent': BROWSER_UA #add for act like browser
             }
             with yt_dlp.YoutubeDL(ydl_opts_audio) as ydl:
                 ydl.download([video_url])

@@ -11,12 +11,17 @@ import mimetypes
 from urllib.parse import quote
 from email.header import decode_header
 import quopri
+import base64
+
 
 # Import the YouTube downloader
 from .youtube_downloader import YouTubeDownloader
 
 # Initialize YouTube downloader
 youtube_downloader = YouTubeDownloader()
+
+# use a single browser-like User-Agent everywhere
+BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # ---------- Utility Functions ----------
 def is_valid_url(url):
@@ -49,6 +54,13 @@ def sanitize_filename(name):
 def extract_video_info(url):
     """Extract video info using yt-dlp (for non-YouTube platforms)"""
     try:
+        # This change makes requests look like Chrome to servers.
+        ydl_opts = {
+            'quiet': True,
+            'no_warnings': True,
+            'user_agent': BROWSER_UA,
+        }
+
         with yt_dlp.YoutubeDL({'quiet': True, 'no_warnings': True}) as ydl:
             info = ydl.extract_info(url, download=False)
             return {
@@ -157,6 +169,7 @@ def download_other_platforms(url, quality):
     ydl_opts = {
         'outtmpl': os.path.join(download_dir, '%(title)s.%(ext)s'),
         'format': 'best[height<=1080]/best',
+        'user_agent': BROWSER_UA,  #add for act like browser
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -175,88 +188,6 @@ def download_other_platforms(url, quality):
 
     return serve_file(final_filepath, final_filename)
 
-
-
-# def clean_filename(filename: str) -> str:
-#     """Clean and decode filenames, including Q-encoded ones from YouTube Shorts."""
-#     # Detect Q-encoded (=utf-8_q_) filenames
-#     if filename.lower().startswith("=_utf-8_q_"):
-#         try:
-#             decoded_parts = decode_header(filename)
-#             decoded_filename = ""
-#             for text, enc in decoded_parts:
-#                 if isinstance(text, bytes):
-#                     if enc:
-#                         decoded_filename += text.decode(enc, errors="ignore")
-#                     else:
-#                         # Sometimes it's quoted-printable
-#                         decoded_filename += quopri.decodestring(text).decode("utf-8", errors="ignore")
-#                 else:
-#                     decoded_filename += text
-
-#             # Sanitize invalid characters
-#             decoded_filename = re.sub(r'[\\/*?:"<>|]', "_", decoded_filename)
-#             if not decoded_filename.lower().endswith(".mp4"):
-#                 decoded_filename += ".mp4"
-#             print(f"[Serve] Decoded Shorts filename → {decoded_filename}")
-#             return decoded_filename
-#         except Exception as e:
-#             print(f"[Serve] Failed to decode Q-encoded filename, using fallback: {e}")
-#             return "video.mp4"
-
-#     # Normal cleanup
-#     filename = re.sub(r'[\\/*?:"<>|]', "_", filename).strip()
-#     if not filename.lower().endswith(".mp4"):
-#         filename += ".mp4"
-#     return filename
-
-
-# def serve_file(file_path, filename, temp_files=None):
-#     """Serve file for download with proper filename handling"""
-#     print(f"[Serve] Raw filename: {filename}")
-
-#     # Clean / decode filename
-#     filename = clean_filename(filename)
-
-#     def file_iterator(path, chunk_size=8192):
-#         with open(path, 'rb') as f:
-#             while chunk := f.read(chunk_size):
-#                 yield chunk
-#         # Cleanup after streaming
-#         try:
-#             os.remove(path)
-#             if temp_files:
-#                 for temp_file in temp_files:
-#                     if os.path.exists(temp_file):
-#                         os.remove(temp_file)
-#         except OSError:
-#             pass
-
-#     file_size = os.path.getsize(file_path)
-#     mime_type, _ = mimetypes.guess_type(file_path)
-
-#     response = StreamingHttpResponse(
-#         file_iterator(file_path),
-#         content_type=mime_type or 'video/mp4'
-#     )
-
-#     # ✅ RFC 5987 safe filename
-#     quoted_filename = quote(filename)
-#     response['Content-Disposition'] = f"attachment; filename*=UTF-8''{quoted_filename}"
-#     response['Content-Length'] = file_size
-#     response['X-Filename'] = filename  # for frontend display
-
-#     print(f"[Serve] Final filename header: {filename}")
-#     return response
-
-from urllib.parse import quote
-from email.header import decode_header
-import quopri
-import base64
-import re
-import mimetypes
-import os
-from django.http import StreamingHttpResponse
 
 def clean_filename(filename: str, ascii_only=True) -> str:
     """Clean and decode filenames safely."""
