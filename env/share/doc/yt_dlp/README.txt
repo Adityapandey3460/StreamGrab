@@ -2254,8 +2254,7 @@ youtube
 -   player_client: Clients to extract video data from. The currently
     available clients are web, web_safari, web_embedded, web_music,
     web_creator, mweb, ios, android, android_vr, tv, tv_simply and
-    tv_embedded. By default, tv_simply,tv,web is used, but
-    tv,web_safari,web is used when authenticating with cookies and
+    tv_embedded. By default, tv,web_safari,web is used, and
     tv,web_creator,web is used with premium accounts. The web_music
     client is added for music.youtube.com URLs when logged-in cookies
     are used. The web_embedded client is added for age-restricted videos
