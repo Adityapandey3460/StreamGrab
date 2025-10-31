@@ -240,7 +240,7 @@ configuration file.
 
 DEPENDENCIES
 
-Python versions 3.9+ (CPython) and 3.11+ (PyPy) are supported. Other
+Python versions 3.10+ (CPython) and 3.11+ (PyPy) are supported. Other
 versions and implementations may or may not work correctly.
 
 While all the other dependencies are optional, ffmpeg and ffprobe are
@@ -352,7 +352,7 @@ may not work correctly.
 
 Platform-independent Binary (UNIX)
 
-You will need the build tools python (3.9+), zip, make (GNU), pandoc*
+You will need the build tools python (3.10+), zip, make (GNU), pandoc*
 and pytest*.
 
 After installing these, simply run make.
@@ -2253,13 +2253,15 @@ youtube
     respectively
 -   player_client: Clients to extract video data from. The currently
     available clients are web, web_safari, web_embedded, web_music,
-    web_creator, mweb, ios, android, android_vr, tv, tv_simply and
-    tv_embedded. By default, tv,web_safari,web is used, and
-    tv,web_creator,web is used with premium accounts. The web_music
-    client is added for music.youtube.com URLs when logged-in cookies
-    are used. The web_embedded client is added for age-restricted videos
-    but only works if the video is embeddable. The tv_embedded and
-    web_creator clients are added for age-restricted videos if account
+    web_creator, mweb, ios, android, android_sdkless, android_vr, tv,
+    tv_simply and tv_embedded. By default,
+    android_sdkless,tv,web_safari,web is used. android_sdkless is
+    omitted if cookies are passed. If premium cookies are passed,
+    tv,web_creator,web_safari,web is used instead. The web_music client
+    is added for music.youtube.com URLs when logged-in cookies are used.
+    The web_embedded client is added for age-restricted videos but only
+    works if the video is embeddable. The tv_embedded and web_creator
+    clients are added for age-restricted videos if account
     age-verification is required. Some clients, such as web and
     web_music, require a po_token for their formats to be downloadable.
     Some clients, such as web_creator, will only work with
@@ -2285,9 +2287,9 @@ youtube
     debugging purposes. You can use actual to go with what is prescribed
     by the site
 -   player_js_version: The player javascript version to use for n/sig
-    deciphering, in the format of signature_timestamp@hash. Currently,
-    the default is to force 20348@0004de42. You can use actual to go
-    with what is prescribed by the site
+    deciphering, in the format of signature_timestamp@hash (e.g.
+    20348@0004de42). The default is to use what is prescribed by the
+    site, and can be selected with actual
 -   comment_sort: top or new (default) - choose comment sorting mode (on
     YouTube's side)
 -   max_comments: Limit the amount of comments to gather.
@@ -2919,7 +2921,7 @@ Differences in default behavior
 Some of yt-dlp's default options are different from that of youtube-dl
 and youtube-dlc:
 
--   yt-dlp supports only Python 3.9+, and will remove support for more
+-   yt-dlp supports only Python 3.10+, and will remove support for more
     versions as they become EOL; while youtube-dl still supports Python
     2.6+ and 3.2+
 -   The options --auto-number (-A), --title (-t) and --literal (-l), no

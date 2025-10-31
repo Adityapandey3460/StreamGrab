@@ -2660,10 +2660,13 @@ respectively
 \f[V]player_client\f[R]: Clients to extract video data from.
 The currently available clients are \f[V]web\f[R], \f[V]web_safari\f[R],
 \f[V]web_embedded\f[R], \f[V]web_music\f[R], \f[V]web_creator\f[R],
-\f[V]mweb\f[R], \f[V]ios\f[R], \f[V]android\f[R], \f[V]android_vr\f[R],
-\f[V]tv\f[R], \f[V]tv_simply\f[R] and \f[V]tv_embedded\f[R].
-By default, \f[V]tv,web_safari,web\f[R] is used, and
-\f[V]tv,web_creator,web\f[R] is used with premium accounts.
+\f[V]mweb\f[R], \f[V]ios\f[R], \f[V]android\f[R],
+\f[V]android_sdkless\f[R], \f[V]android_vr\f[R], \f[V]tv\f[R],
+\f[V]tv_simply\f[R] and \f[V]tv_embedded\f[R].
+By default, \f[V]android_sdkless,tv,web_safari,web\f[R] is used.
+\f[V]android_sdkless\f[R] is omitted if cookies are passed.
+If premium cookies are passed, \f[V]tv,web_creator,web_safari,web\f[R]
+is used instead.
 The \f[V]web_music\f[R] client is added for \f[V]music.youtube.com\f[R]
 URLs when logged-in cookies are used.
 The \f[V]web_embedded\f[R] client is added for age-restricted videos but
@@ -2711,9 +2714,10 @@ You can use \f[V]actual\f[R] to go with what is prescribed by the site
 .IP \[bu] 2
 \f[V]player_js_version\f[R]: The player javascript version to use for
 n/sig deciphering, in the format of
-\f[V]signature_timestamp\[at]hash\f[R].
-Currently, the default is to force \f[V]20348\[at]0004de42\f[R].
-You can use \f[V]actual\f[R] to go with what is prescribed by the site
+\f[V]signature_timestamp\[at]hash\f[R] (e.g.
+\f[V]20348\[at]0004de42\f[R]).
+The default is to use what is prescribed by the site, and can be
+selected with \f[V]actual\f[R]
 .IP \[bu] 2
 \f[V]comment_sort\f[R]: \f[V]top\f[R] or \f[V]new\f[R] (default) -
 choose comment sorting mode (on YouTube\[aq]s side)
@@ -3109,7 +3113,7 @@ You can suppress this warning by adding \f[V]--no-update\f[R] to your
 command or configuration file.
 .SS DEPENDENCIES
 .PP
-Python versions 3.9+ (CPython) and 3.11+ (PyPy) are supported.
+Python versions 3.10+ (CPython) and 3.11+ (PyPy) are supported.
 Other versions and implementations may or may not work correctly.
 .PP
 While all the other dependencies are optional, \f[V]ffmpeg\f[R] and
@@ -3283,7 +3287,7 @@ officially supported.
 This may or may not work correctly.
 .SS Platform-independent Binary (UNIX)
 .PP
-You will need the build tools \f[V]python\f[R] (3.9+), \f[V]zip\f[R],
+You will need the build tools \f[V]python\f[R] (3.10+), \f[V]zip\f[R],
 \f[V]make\f[R] (GNU), \f[V]pandoc\f[R]* and \f[V]pytest\f[R]*.
 .PP
 After installing these, simply run \f[V]make\f[R].
@@ -3819,7 +3823,7 @@ Features marked with a \f[B]*\f[R] have been back-ported to youtube-dl
 Some of yt-dlp\[aq]s default options are different from that of
 youtube-dl and youtube-dlc:
 .IP \[bu] 2
-yt-dlp supports only Python 3.9+, and will remove support for more
+yt-dlp supports only Python 3.10+, and will remove support for more
 versions as they become
 EOL (https://devguide.python.org/versions/#python-release-cycle); while
 youtube-dl still supports Python 2.6+ and
